@@ -1,0 +1,1 @@
+//to generate the compile_commands.json in build folder for clangd reading

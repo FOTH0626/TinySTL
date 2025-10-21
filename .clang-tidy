@@ -1,0 +1,77 @@
+# ===================================================================
+# .clang-tidy C++ 静态代码检查配置文件
+#
+# 适用于大多数现代 C++ 项目的优秀起点。
+# 请将此文件放置在你的项目根目录下。
+# ===================================================================
+
+# 'Checks' 是配置的核心。它是一个逗号分隔的字符串。
+# '-' 前缀用于禁用一个检查或一组检查。
+# 可以使用通配符 '*' 来选择一组检查。
+Checks: >
+  # --- 首先禁用所有检查，从一个干净的状态开始 ---
+  -*,
+
+  # --- 启用广泛且非常实用的检查类别 ---
+  bugprone-*,          # 捕捉常见的逻辑错误和潜在的 Bug (例如，异常的错误使用、危险的类型转换)。
+  cert-*,              # 遵循 CERT C++ 安全编码标准的规则。
+  cppcoreguidelines-*,  # 强制实施 C++核心准则 (C++ Core Guidelines) 的大量检查。功能非常强大。
+  modernize-*,         # 帮助你将代码现代化 (例如，建议使用 'override'、'nullptr'、范围for循环等)。
+  performance-*,       # 发现常见的性能陷阱 (例如，不必要的拷贝、低效的算法)。
+  portability-*,       # 警告那些在不同平台或编译器之间不可移植的代码。
+  readability-*,       # 提高代码的清晰度和一致性。
+
+  # --- 微调：禁用一些通常过于“吵闹”或有争议的特定检查 ---
+  # 除非你有非常严格的风格指南，否则这些是很好的禁用候选项。
+
+  # 命名约定是高度项目相关的。与其使用它默认的、嘈杂的行为，不如在下面的
+  # 'CheckOptions' 中明确配置它。
+  -readability-identifier-naming,
+
+  # 建议使用 C++11 的尾随返回类型语法。许多开发者更喜欢传统语法。
+  # 如果你不强制执行此风格，请禁用它。
+  -modernize-use-trailing-return-type,
+
+  # “魔术数字”检查可能会非常吵闹，对合法的 0、1 等数字进行标记。
+  # 最好将它们配置得更宽松一些 (见下面的 CheckOptions)。
+  -cppcoreguidelines-avoid-magic-numbers,
+  -readability-magic-numbers,
+
+  # 这个检查很好，但在处理传递数组的遗留代码库时可能会非常吵闹。
+  # 对于新项目，可以考虑启用它。
+  -cppcoreguidelines-pro-bounds-array-to-pointer-decay
+
+# 'HeaderFilterRegex' 用于控制分析哪些文件。
+# 这对于避免从系统头文件或第三方库中获取警告至关重要。
+HeaderFilterRegex: '.*'
+# 一个更具体的、只分析你自己项目文件的正则表达式可能是：
+# HeaderFilterRegex: '^(src|include|app)/.*'
+
+# 'CheckOptions' 允许你配置特定检查的行为。
+# 在这里，你可以根据团队的编码标准定制检查器。
+CheckOptions:
+  # 示例：为 readability-identifier-naming 配置命名约定
+  # 取消注释并调整此部分，以匹配你项目的风格指南。
+   - key:             readability-identifier-naming.ClassCase
+     value:           CamelCase
+   - key:             readability-identifier-naming.StructCase
+     value:           CamelCase
+   - key:             readability-identifier-naming.FunctionCase
+     value:           camelBack
+   - key:             readability-identifier-naming.VariableCase
+     value:           snake_case
+   - key:             readability-identifier-naming.MemberCase
+     value:           snake_case
+   - key:             readability-identifier-naming.MacroDefinitionCase
+     value:           UPPER_CASE
+
+  # 示例：通过忽略常用数字，使“魔术数字”检查更加实用。
+  - key:             readability-magic-numbers.IgnoredIntegerValues
+    value:           '0;1;2;3;4;10;100;1000'
+  - key:             cppcoreguidelines-avoid-magic-numbers.IgnoredIntegerValues
+    value:           '0;1;2;3;4;10;100;1000'
+
+  # 配置 modernize-use-trailing-return-type，使其仅应用于复杂的函数签名
+  # 这使得该检查的干扰性大大降低。
+  - key:             modernize-use-trailing-return-type.StatementMacros
+    value:           'LAMBDA;STMT'
