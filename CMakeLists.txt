@@ -9,12 +9,8 @@ set(CMAKE_CXX_STANDARD_REQUIRED ON)
 set(CMAKE_CXX_EXTENSIONS OFF)
 
 
-include_directories(src/allocator)
-include_directories(src/algorithm)
-include_directories(src/allocator)
-include_directories(src/container)
-include_directories(src/functor)
-include_directories(src/iterator)
+include_directories(src)
+
 
 add_executable(main main.cpp)
 
