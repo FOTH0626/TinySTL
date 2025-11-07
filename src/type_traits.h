@@ -1,5 +1,5 @@
-#ifndef FOTH_TYPE_TRAITS
-#define FOTH_TYPE_TRAITS
+#ifndef FOTH_TYPE_TRAITS_H
+#define FOTH_TYPE_TRAITS_H
 
 // #include <type_traits>
 
@@ -103,8 +103,41 @@ struct is_void : is_same<void, typename remove_cv<T>::type>
 template<typename T>
 using is_void_t = is_void<T>::type;
 
+template<typename T>
+struct is_lvalue_reference : false_type
+{};
+
+template<typename T>
+struct is_lvalue_reference<T&> : true_type
+{};
+
+template<typename T>
+constexpr bool is_lvalue_reference_v = is_lvalue_reference<T>::value;
+
 //后面太长先不写了
+
+
+
+//remove reference
+template<typename T>
+struct remove_reference{
+    using type = T;
+};
+
+template<typename T>
+struct remove_reference<T&>{
+    using type = T;
+};
+
+template<typename T>
+struct remove_reference<T&&>{
+    using type = T;
+};
+
+template<typename T>
+using remove_reference_t = remove_reference<T>::type;
+
 
 }
 
-#endif //FOTH_TYPE_TRAITS
+#endif //FOTH_TYPE_TRAITS_H
